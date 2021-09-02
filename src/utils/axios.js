@@ -49,20 +49,7 @@ axiosApiIntances.interceptors.response.use(
     // Do something with response error
     console.log(error.response);
     if (error.response.status === 403) {
-      if (error.response.data.msg === "jwt expired") {
-        const refreshToken = localStorage.getItem("refreshToken");
-        axiosApiIntances
-          .post("auth/refresh", { refreshToken })
-          .then((res) => {
-            localStorage.setItem("token", res.data.data.token);
-            window.location.reload();
-          })
-          .catch((err) => console.log(err));
-      } else {
-        alert("Please Login !");
-        localStorage.clear();
-        window.location.href = "/login";
-      }
+      localStorage.clear();
     }
     return Promise.reject(error);
   }
