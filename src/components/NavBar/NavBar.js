@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Space, Layout, Menu, Card, Row, Col, Dropdown, message } from "antd";
+import {
+  Space,
+  Layout,
+  Menu,
+  Card,
+  Row,
+  Col,
+  Dropdown,
+  message,
+  Badge,
+} from "antd";
 
-import SubMenu from "antd/lib/menu/SubMenu";
 import Modal from "antd/lib/modal/Modal";
 import axiosApiIntances from "../../utils/axios";
 import Swal from "sweetalert2";
 
-const NavBar = () => {
+const NavBar = (props) => {
   const { Header } = Layout;
   const [background, setBackground] = useState("transparent");
   const [linkColor, setLinkColor] = useState("black");
   const [isModal, setIsModal] = useState(false);
   const [isModal2, setIsModal2] = useState(false);
   const [data, setData] = useState([]);
-  const [current, setCurrent] = useState("mail");
   const [userMovie, setUserMovie] = useState([]);
-  // const [data2, setData2] = useState({});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,9 +40,6 @@ const NavBar = () => {
     // return () => {
     //   document.removeEventListener("scroll", handleScroll);
     // };
-    axiosApiIntances.get("membership").then((res) => {
-      setData(res.data.data);
-    });
 
     axiosApiIntances
       .get(`transaction/${parseInt(localStorage.getItem("userId"))}`)
@@ -76,6 +80,15 @@ const NavBar = () => {
   };
 
   const handleModal = () => {
+    parseInt(localStorage.getItem("membership")) <= 0
+      ? axiosApiIntances.get("membership").then((res) => {
+          setData(res.data.data);
+        })
+      : axiosApiIntances
+          .get(`membership/${parseInt(localStorage.getItem("membership"))}`)
+          .then((res) => {
+            setData(res.data.data);
+          });
     setIsModal(true);
   };
 
@@ -117,7 +130,7 @@ const NavBar = () => {
       if (result.isConfirmed) {
         Swal.fire({
           icon: "success",
-          title: `Success To Buy Membership`,
+          title: `Success To Buy Membership, Please Login Again`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -130,7 +143,8 @@ const NavBar = () => {
         axiosApiIntances
           .post("membership", setData)
           .then((res) => {
-            console.log(res);
+            localStorage.clear();
+            window.location.reload();
           })
           .catch((err) => {
             console.log(err);
@@ -165,7 +179,9 @@ const NavBar = () => {
           }}
           onClick={handleModal}
         >
-          Membership
+          {parseInt(localStorage.getItem("membership")) <= 0
+            ? "Membership"
+            : "My Membership"}
         </p>
       </Menu.Item>
       <Menu.Item>
@@ -199,63 +215,76 @@ const NavBar = () => {
           <Dropdown overlay={menu}>
             <p style={styles.p1}>Profile</p>
           </Dropdown>
-          ,
-          {/* <Menu
-            selectedKeys={SubMenu}
-            mode="horizontal"
-            style={{ backgroundColor: `${background}`, border: "0px" }}
-          >
-            <SubMenu key="SubMenu" title="Profile" style={styles.p}>
-              <Menu.Item onClick={handleModal2} style={styles.p1}>
-                My Film
-              </Menu.Item>
-
-              <Menu.Item onClick={handleModal} style={styles.p1}>
-                Membership
-              </Menu.Item>
-
-              <Menu.Item onClick={handleLogout} style={styles.p1}>
-                Logout
-              </Menu.Item>
-            </SubMenu>
-          </Menu> */}
         </Space>
         <Modal visible={isModal} onCancel={Cancel} onOk={Cancel} footer={false}>
           <Row style={{ padding: "20px" }}>
+            {parseInt(localStorage.getItem("membership")) > 0 && (
+              <p
+                style={{
+                  textAlign: "center",
+
+                  fontWeight: "bold",
+                  fontFamily: "Noto Sans JP",
+                }}
+              >
+                Membership Active :
+              </p>
+            )}
             {data.map((item, index) => {
               return (
                 <>
                   <Col sm={24} key={index}>
-                    <Card
-                      style={{
-                        marginBottom: "15px",
-                        width: "100%",
-                        borderRadius: "10px",
-                        boxShadow: "3px 3px 3px #000",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleBuy(item)}
-                    >
-                      <Row>
-                        <Col sm={12}>
-                          <h1>{item.membership_name}</h1>
-                          <p>{item.membership_description}</p>
-                        </Col>
-                        <Col sm={12}>
-                          <p
-                            style={{
-                              textAlign: "center",
-                              fontSize: "20px",
-                              fontWeight: "bold",
-                              fontFamily: "Noto Sans JP",
-                              marginTop: "40px",
-                            }}
-                          >
-                            {formatRupiah(item.membership_price)}
-                          </p>
-                        </Col>
-                      </Row>
-                    </Card>
+                    {parseInt(localStorage.getItem("membership")) > 0 ? (
+                      <Badge.Ribbon text="Active Now">
+                        <Card
+                          style={{
+                            marginBottom: "15px",
+                            width: "100%",
+                            borderRadius: "10px",
+                            boxShadow: "3px 3px 3px #000",
+                          }}
+                        >
+                          <Row>
+                            <Col sm={12}>
+                              <h1>{item.membership_name}</h1>
+                              <p>{item.membership_description}</p>
+                            </Col>
+                            <Col sm={12}></Col>
+                          </Row>
+                        </Card>
+                      </Badge.Ribbon>
+                    ) : (
+                      <Card
+                        style={{
+                          marginBottom: "15px",
+                          width: "100%",
+                          borderRadius: "10px",
+                          boxShadow: "3px 3px 3px #000",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleBuy(item)}
+                      >
+                        <Row>
+                          <Col sm={12}>
+                            <h1>{item.membership_name}</h1>
+                            <p>{item.membership_description}</p>
+                          </Col>
+                          <Col sm={12}>
+                            <p
+                              style={{
+                                textAlign: "center",
+                                fontSize: "20px",
+                                fontWeight: "bold",
+                                fontFamily: "Noto Sans JP",
+                                marginTop: "40px",
+                              }}
+                            >
+                              {formatRupiah(item.membership_price)}
+                            </p>
+                          </Col>
+                        </Row>
+                      </Card>
+                    )}
                   </Col>
                 </>
               );

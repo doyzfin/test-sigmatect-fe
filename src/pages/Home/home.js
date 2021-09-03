@@ -59,33 +59,89 @@ const Home = (props) => {
               padding: "20px",
             }}
           >
-            {data.map((item, index) => {
-              return (
-                <>
-                  <Col key={index} sm={2}>
-                    <Card
-                      title={item.movies_name}
-                      style={{
-                        borderRadius: "10px",
-                        height: "100%",
-                        marginBottom: "15px",
-                        cursor: "pointer",
-                        boxShadow: "2px 2px #9e9e9e",
-                      }}
-                      onClick={(event) => handleDetail(event, item.movies_id)}
-                    >
-                      <img
-                        src={item.movie_image}
-                        alt=""
-                        width="100%"
-                        height="100%"
-                      />
-                    </Card>
-                  </Col>
-                </>
-              );
-            })}
+            {data
+              .filter((item) => item.event === 0)
+              .map((item, index) => {
+                return (
+                  <>
+                    <Col key={index} sm={2}>
+                      <Card
+                        title={item.movies_name}
+                        style={{
+                          borderRadius: "10px",
+                          height: "100%",
+                          marginBottom: "15px",
+                          cursor: "pointer",
+                          boxShadow: "2px 2px #9e9e9e",
+                        }}
+                        onClick={(event) => handleDetail(event, item.movies_id)}
+                      >
+                        <img
+                          src={item.movie_image}
+                          alt=""
+                          width="100%"
+                          height="100%"
+                        />
+                      </Card>
+                    </Col>
+                  </>
+                );
+              })}
           </Row>
+          {parseInt(localStorage.getItem("membership")) > 0 && (
+            <>
+              {" "}
+              <h4
+                style={{
+                  fontFamily: "Noto Sans JP",
+                  marginBottom: "20px",
+                  marginTop: "40px",
+                }}
+              >
+                Membership
+              </h4>
+              <Row
+                style={{
+                  display: "flex",
+                  flexWrap: "nowrap",
+                  overflowX: "auto",
+                  padding: "20px",
+                }}
+              >
+                {data
+                  .filter((item) => item.event === 1)
+                  .map((item, index) => {
+                    return (
+                      <>
+                        <Col key={index} sm={2}>
+                          <Card
+                            title={item.movies_name}
+                            style={{
+                              borderRadius: "10px",
+                              height: "100%",
+                              marginBottom: "15px",
+                              cursor: "pointer",
+                              boxShadow: "2px 2px #9e9e9e",
+                            }}
+                            onClick={(event) =>
+                              handleDetail(event, item.movies_id)
+                            }
+                          >
+                            <img
+                              src={item.movie_image}
+                              alt=""
+                              width="100%"
+                              height="100%"
+                            />
+                          </Card>
+                        </Col>
+                      </>
+                    );
+                  })}
+              </Row>
+            </>
+          )}
+
           <h4
             style={{
               fontFamily: "Noto Sans JP",
