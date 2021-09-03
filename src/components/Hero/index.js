@@ -1,21 +1,9 @@
-import { Card, Carousel, Col, Image, Row } from "antd";
+import { Col, Row } from "antd";
 import { Container } from "react-bootstrap";
 import dki from "../../assets/img/Group 15.png";
 import styles from "../../pages/Home/Home.module.css";
 
 const Video = () => {
-  const contentStyle = {
-    height: "100%",
-    color: "#fff",
-    lineHeight: "300px",
-    textAlign: "center",
-    background: "#354e80",
-    margin: 0,
-    border: "0px",
-    padding: "0px",
-    opacity: "0.9",
-  };
-
   return (
     <>
       <Container fluid style={{ backgroundColor: "#354e80" }}>

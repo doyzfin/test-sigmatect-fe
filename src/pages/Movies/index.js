@@ -5,7 +5,6 @@ import { Button, Card, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import axiosApiIntances from "../../utils/axios";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
 
 const Movies = (props) => {
   const [data, setData] = useState({});
