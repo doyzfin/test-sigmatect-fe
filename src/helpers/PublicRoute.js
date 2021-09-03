@@ -15,11 +15,10 @@ const PublicRoute = ({ component: Component, restricted, ...rest }) => {
             <Component {...props} />
           )
         }
-      />
+      /> // eslint-disable-next-line no-sequences,
     ),
     (
       // eslint-disable-next-line no-sequences,
-      // eslint-disable-next-line no-sequences
       <Route
         {...rest}
         render={(props) =>
